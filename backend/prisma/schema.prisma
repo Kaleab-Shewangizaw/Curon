@@ -8,57 +8,53 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   name      String
-  createdAt DateTime  @default(now())
+  password  String
+  createdAt DateTime @default(now())
 
-  // Relations
-  thoughts  Thought[] // One User can have many Thoughts
+  thoughts  Thought[]
 }
 
 model Thought {
-  id        String    @id @default(uuid())
+  id        String   @id @default(cuid())
   content   String
-  source    String
-  topic     String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
 
-  // Relations
-  ownerId   String?       // Foreign key to User
-  owner     User?         @relation(fields: [ownerId], references: [id])
-  intents   Intent[]      // One Thought can have many Intents
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  intents   Intent[]
 }
 
 model Intent {
-  id               String    @id @default(uuid())
-  type             String
-  topic            String?
-  confidence       Float?
+  id         String   @id @default(cuid())
+  type       String
+  confidence Float?
+  status     IntentStatus @default(ACTIVE)
+  createdAt  DateTime @default(now())
 
-  // Foreign key to Thought
-  relatedThoughtId String?   
-  relatedThought   Thought?  @relation(fields: [relatedThoughtId], references: [id])
+  thoughtId  String
+  thought    Thought  @relation(fields: [thoughtId], references: [id])
 
-  // Relations
-  tasks            Task[]    // One Intent can have many Tasks
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
 
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  tasks      Task[]
 }
 
 model Task {
-  id              String    @id @default(uuid())
-  title           String
-  status          String
-  dueDate         DateTime?
-  priority        Int?
+  id        String   @id @default(cuid())
+  title     String
+  priority  Int?
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  // Foreign key to Intent
-  relatedIntentId String?
-  relatedIntent   Intent?   @relation(fields: [relatedIntentId], references: [id])
+  intentId  String
+  intent    Intent   @relation(fields: [intentId], references: [id])
+}
 
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+enum IntentStatus {
+  ACTIVE
+  FORGOTTEN
 }

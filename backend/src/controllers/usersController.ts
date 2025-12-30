@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import prisma from "../db";
+import prisma from "../db.ts";
 
 const createUser = async (req: Request, res: Response) => {
   const { name, email } = req.body;
@@ -16,6 +16,7 @@ const createUser = async (req: Request, res: Response) => {
       data: {
         name,
         email,
+        password: "user1234",
       },
     });
     res.status(201).json(user);

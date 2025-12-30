@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import prisma from "../db";
+import prisma from "../db.ts";
 
 const createThought = async (req: Request, res: Response) => {
-  const { content, topic = "text", source } = req.body;
+  const { content, userId } = req.body;
   try {
     if (!content || content.trim() === "") {
       return res.status(400).json({ error: "Content is required" });
@@ -11,8 +11,7 @@ const createThought = async (req: Request, res: Response) => {
     const thought = await prisma.thought.create({
       data: {
         content,
-        topic,
-        source,
+        userId,
       },
     });
     res.status(201).json(thought);
