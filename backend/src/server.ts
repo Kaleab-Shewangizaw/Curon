@@ -1,12 +1,12 @@
 import express from "express";
-import prisma from "./db";
+import prisma from "./db.ts";
 import "dotenv/config";
 import {
   createThought,
   deleteThought,
   getThought,
   updateThought,
-} from "./controllers/thoughtControllers";
+} from "./controllers/thoughtControllers.ts";
 import {
   createUser,
   deleteUser,
@@ -14,7 +14,7 @@ import {
   getGroupOfUsers,
   getUser,
   updateUser,
-} from "./controllers/usersController";
+} from "./controllers/usersController.ts";
 
 const app = express();
 

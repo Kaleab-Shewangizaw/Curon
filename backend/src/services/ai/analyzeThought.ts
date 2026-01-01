@@ -35,6 +35,11 @@ CRITICAL RULES:
 
 LOGIC RULES:
 - If the current thought matches a previous intent type exactly, action MUST be "get"
+- If the current thought indicates modification of a previous intent, action MUST be "update"
+- If the current thought indicates removal of a previous intent, action MUST be "delete"
+- If the current thought is new and does not match any previous intent, action MUST be "create"
+
+JSON SCHEMA RULES:
 - Use "id" ONLY for actions: get, update, delete
 - NEVER include "id" when action is "create"
 
@@ -43,7 +48,7 @@ Schema:
 {
   "text": "short summary (max 20 words)/if there is same intent then tell that the user already mentioned this idea/intent before",
   "action": "create | get | update | delete",
-  "intents": [
+  "intents": [  //could be multipe intents in one prompt so deparate them. if so, create multiple intents for each. with their respective tasks.  // if the action is delete/get/update, then the listed intents must exist in previous intents. Otherwise, for create, the intents must be new.
     {
       "id": "string (ONLY for get/update/delete)",
       "type": "clear intent name",
@@ -122,13 +127,32 @@ ${content}
     (i) => normalize(i.type) === normalize(intent.type)
   );
 
+  // CASE 1: Intent EXISTS
   if (match) {
-    // FORCE get
-    parsed.action = "get";
-    intent.id = match.id;
-  } else {
-    // FORCE create
-    parsed.action = "create";
+    // Attach ID for valid actions
+    if (
+      parsed.action === "get" ||
+      parsed.action === "update" ||
+      parsed.action === "delete"
+    ) {
+      intent.id = match.id;
+    }
+
+    // AI mistakenly said "create" for an existing intent → downgrade to get
+    if (parsed.action === "create") {
+      parsed.action = "get";
+      intent.id = match.id;
+    }
+  }
+
+  // CASE 2: Intent DOES NOT EXIST
+  else {
+    // If AI tries to update/delete/get non-existing intent → force create
+    if (parsed.action !== "create") {
+      parsed.action = "create";
+    }
+
+    // Ensure no ID leakage
     delete intent.id;
   }
 
@@ -150,7 +174,7 @@ const previousIntents: AIIntentResult[] = [
 ];
 
 const thought =
-  "I want to buy a new laptop because my current one is too slow. I need something lightweight.";
+  "I have to start going to the gym regularly. and I am thinking of learning to play guitar.";
 
 analyzeThoughtWithAI(thought, previousIntents)
   .then((result) => {

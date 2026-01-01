@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
+
 import prisma from "../db.ts";
 
 const createThought = async (req: Request, res: Response) => {
