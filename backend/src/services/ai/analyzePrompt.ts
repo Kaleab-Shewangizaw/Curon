@@ -32,12 +32,15 @@ IMPORTANT RULES:
    - Max 50 words
    - Natural, conversational, supportive
    - No emojis
-
+4. messageContext is what your message is talking about:
+    - if you need more clarfication choose "question"
+    - no need to have more calrification choose "text"
 RESPONSE FORMAT (JSON ONLY):
 
 {
   "action": "create | get | update | delete",
   "message": "short friendly response (max 50 words)",
+  "messaegeContext": "question | text",
   "intents": [
     {
       "id": "string (ONLY for get/update/delete)",
