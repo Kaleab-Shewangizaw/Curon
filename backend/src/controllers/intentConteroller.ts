@@ -23,6 +23,15 @@ const createIntent = async (req: Request, res: Response) => {
   }
 };
 
+const getAllIntents = async (res: Response) => {
+  try {
+    const intents = await prisma.intent.findMany();
+    return intents;
+  } catch (error) {
+    throw new Error("Internal server error");
+  }
+};
+
 const deleteIntent = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -84,4 +93,5 @@ export {
   updateIntent,
   getIntent,
   getThoughtIntents,
+  getAllIntents,
 };

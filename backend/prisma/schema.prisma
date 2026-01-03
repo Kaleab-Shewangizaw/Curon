@@ -15,6 +15,7 @@ model User {
   createdAt DateTime @default(now())
 
   thoughts  Thought[]
+  intents   Intent[] 
 }
 
 model Thought {

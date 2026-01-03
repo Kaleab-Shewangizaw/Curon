@@ -161,24 +161,24 @@ ${content}
 
 /* ===================== TEMP TEST ===================== */
 
-const previousIntents: AIIntentResult[] = [
-  {
-    id: "1",
-    type: "Buy a new laptop",
-    confidence: 0.95,
-    tasks: [
-      { title: "Research laptop models", priority: 8 },
-      { title: "Compare prices", priority: 7 },
-    ],
-  },
-];
+// const previousIntents: AIIntentResult[] = [
+//   {
+//     id: "1",
+//     type: "Buy a new laptop",
+//     confidence: 0.95,
+//     tasks: [
+//       { title: "Research laptop models", priority: 8 },
+//       { title: "Compare prices", priority: 7 },
+//     ],
+//   },
+// ];
 
-const thought =
-  "I have to start going to the gym regularly. and I am thinking of learning to play guitar.";
+// const thought =
+//   "I have to start going to the gym regularly. and I am thinking of learning to play guitar.";
 
-analyzeThoughtWithAI(thought, previousIntents)
-  .then((result) => {
-    console.log("\nAI Analysis Result:");
-    console.dir(result, { depth: null });
-  })
-  .catch(console.error);
+// analyzeThoughtWithAI(thought, previousIntents)
+//   .then((result) => {
+//     console.log("\nAI Analysis Result:");
+//     console.dir(result, { depth: null });
+//   })
+//   .catch(console.error);
