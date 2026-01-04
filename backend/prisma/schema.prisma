@@ -33,6 +33,8 @@ model Intent {
   type       String
   confidence Float?
   status     IntentStatus @default(ACTIVE)
+  pendingQuestion String?
+  pendingProposal Json?    // Stores the proposed AI plan waiting for confirmation
   createdAt  DateTime @default(now())
 
   thoughtId  String
@@ -42,6 +44,17 @@ model Intent {
   user       User     @relation(fields: [userId], references: [id])
 
   tasks      Task[]
+  chats      IntentChat[]
+}
+
+model IntentChat {
+  id        String   @id @default(cuid())
+  role      String   // "user" | "system"
+  content   String
+  createdAt DateTime @default(now())
+
+  intentId  String
+  intent    Intent   @relation(fields: [intentId], references: [id], onDelete: Cascade)
 }
 
 model Task {
@@ -58,4 +71,5 @@ model Task {
 enum IntentStatus {
   ACTIVE
   FORGOTTEN
+  CLARIFICATION_REQUESTED
 }

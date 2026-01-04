@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "IntentStatus" ADD VALUE 'CLARIFICATION_REQUESTED';

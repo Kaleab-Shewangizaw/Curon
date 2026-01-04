@@ -3,7 +3,7 @@ import { type Request, type Response } from "express";
 import prisma from "../db.ts";
 
 const createUser = async (req: Request, res: Response) => {
-  const { name, email } = req.body;
+  const { name, email, password } = req.body;
   try {
     if (!name || name.trim() === "") {
       return res.status(400).json({ error: "Name is required" });
@@ -16,7 +16,7 @@ const createUser = async (req: Request, res: Response) => {
       data: {
         name,
         email,
-        password: "user1234",
+        password,
       },
     });
     res.status(201).json(user);
@@ -54,6 +54,7 @@ const updateUser = async (req: Request, res: Response) => {
 const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
+    console.log("getting the user...");
     const user = await prisma.user.findUnique({
       where: { id: String(id) },
     });
@@ -66,12 +67,14 @@ const getUser = async (req: Request, res: Response) => {
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (res: Response) => {
   try {
+    console.log("getting all users");
     const users = await prisma.user.findMany();
-    res.status(200).json(users);
+    console.log(users);
+    return res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    console.log({ success: false, error: "Internal server errorrrr" });
   }
 };
 

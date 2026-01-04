@@ -23,12 +23,29 @@ const createIntent = async (req: Request, res: Response) => {
   }
 };
 
-const getAllIntents = async (res: Response) => {
+const getAllIntents = async (req: Request, res: Response) => {
   try {
-    const intents = await prisma.intent.findMany();
-    return intents;
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+
+    const intents = await prisma.intent.findMany({
+      where: { userId },
+      include: { tasks: true },
+    });
+
+    // Map type to title for frontend consistency
+    const formatted = intents.map((i) => ({
+      ...i,
+      title: i.type,
+    }));
+
+    res.status(200).json(formatted);
   } catch (error) {
-    throw new Error("Internal server error");
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -87,11 +104,26 @@ const getThoughtIntents = async (req: Request, res: Response) => {
   }
 };
 
+const getIntentChat = async (req: Request, res: Response) => {
+  const { intentId } = req.params;
+  try {
+    const chats = await prisma.intentChat.findMany({
+      where: { intentId },
+      orderBy: { createdAt: "asc" },
+    });
+    res.status(200).json(chats);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export {
   createIntent,
+  getAllIntents,
   deleteIntent,
   updateIntent,
   getIntent,
   getThoughtIntents,
-  getAllIntents,
+  getIntentChat,
 };
